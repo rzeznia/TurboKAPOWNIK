@@ -24,7 +24,7 @@
                 <Button x:Name="cmtRm" Content="Remove Comment" HorizontalAlignment="Left" Margin="127,218,0,0" VerticalAlignment="Top" Width="103" Height="26" Foreground="#FFB21B14"/>
             </Grid>
         </GroupBox>
-        <Button x:Name="button3" Content="ToJson" HorizontalAlignment="Left" Margin="532,531,0,0" VerticalAlignment="Top" Width="75" Click="button3_Click"/>
+        <Button x:Name="savesprint" Content="Save Sprint" HorizontalAlignment="Left" Margin="532,531,0,0" VerticalAlignment="Top" Width="75" Click="save_Click"/>
         <Button x:Name="button4" Content="ReadJson" HorizontalAlignment="Left" Margin="626,531,0,0" VerticalAlignment="Top" Width="75" Click="button4_Click"/>
         <CheckBox x:Name="inJiraChBox" Content="Is In Jira?" HorizontalAlignment="Left" Margin="1063,434,0,0" VerticalAlignment="Top" Checked="inJiraChBox_Checked" Unchecked="inJiraChBox_Checked"/>
         <CheckBox x:Name="HideIfJira" Content="Hide items if in Jira reported" HorizontalAlignment="Left" Margin="10,519,0,0" VerticalAlignment="Top" Checked="HideIfJira_Checked" Unchecked="HideIfJira_Checked"/>

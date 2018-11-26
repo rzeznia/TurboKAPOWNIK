@@ -1,0 +1,19 @@
+﻿<Window x:Class="TurboKAPOWNIK.SelectSprint"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TurboKAPOWNIK"
+        mc:Ignorable="d"
+        Title="SelectSprint" Height="323.725" Width="654.337">
+    <Grid Height="287" VerticalAlignment="Top">
+        <ListView x:Name="slist" HorizontalAlignment="Left" Height="192" Margin="10,31,0,0" VerticalAlignment="Top" Width="626" SelectionChanged="slist_SelectionChanged">
+        </ListView>
+        <Label x:Name="label" Content="Select sprint to load:" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="load" Content="Load selected sprint" HorizontalAlignment="Left" Margin="240,228,0,0" VerticalAlignment="Top" Width="396" Height="53" Click="load_Click" IsEnabled="False"/>
+        <Label x:Name="sstart" Content="Start date:" HorizontalAlignment="Left" Margin="10,229,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="send" Content="End date :" HorizontalAlignment="Left" Margin="10,255,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="addnew" Content="Add new sprint" HorizontalAlignment="Left" Margin="525,5,0,0" VerticalAlignment="Top" Width="111"/>
+
+    </Grid>
+</Window>

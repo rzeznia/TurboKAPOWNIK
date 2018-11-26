@@ -27,24 +27,57 @@ namespace TurboKAPOWNIK
         internal Task newTask { get; set; }
         internal bool JiraFilterSwitch { get; set; }
         private Sprint current_sprint = new Sprint();
+        internal string sprint_path_file { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            string[] sprints = CheckForSprintFiles();
+            if(sprints.Length > 0)
+                SelectExtSprint(sprints);
+            else
+                AddNewSprint();
 
 
-
-            //Task_List.Add(new Task(1, "Przygotowanie NUC", Category.category[0], "Wątek mailowy: KOPYTKO"));
-            //Task_List[0].CreateSubtask(new Task(2, "Foramt SSD + win install", Category.category[1], "Jak w mailu"));
-            //Task_List.Add(new Task(3, "Refactor kodu", Category.category[2], "Wątek mailowy: GOGO"));
-            //Task_List.Add(new Task(4, "PrzynieśPodaj", Category.category[3], "Wątek mailowy: GOGO"));
-            //Task_List.Add(new Task(5, "Pozamiataj", Category.category[4], "Laboratorium kuhfa"));
-            //Task_List[3].CreateSubtask(new Task(6, "Jebać żydów", Category.category[5], "Ogniem dział"));
-            //Task_List[0].CreateSubtask(new Task(7, "Polaków też jebać", Category.category[6], "Ogniem piekielnym"));
-
-
-            if(current_sprint.task_list != null)
+            if (current_sprint.task_list != null)
                 TreeRefresh();
             
+        }
+
+        private void AddNewSprint()
+        {
+            AddSprint add_sprint = new AddSprint();
+            add_sprint.ShowDialog();
+            if (add_sprint.genSprint != null)
+            {
+                current_sprint = add_sprint.genSprint;
+                refreshSprintInfo();
+                sprint_path_file = Directory.GetCurrentDirectory().ToString() + "\\" + current_sprint.sprint_name + ".json";
+            }
+        }
+
+        private void SelectExtSprint(string[] sprints)
+        {
+            SelectSprint ssprint = new SelectSprint(sprints);
+            ssprint.ShowDialog();
+            if (ssprint.selected != null)
+            {
+                sprint_path_file = ssprint.selected;
+                LoadSprintData(sprint_path_file);
+            }
+            else
+                this.Close();
+        }
+
+        private void LoadSprintData(string sprint_path_file)
+        {
+            using (StreamReader r = new StreamReader(sprint_path_file))
+            {
+                string json = r.ReadToEnd();
+                current_sprint = JsonConvert.DeserializeObject<Sprint>(json);
+            }
+            refreshSprintInfo();
+            if (current_sprint.task_list != null)
+                TreeRefresh();
         }
 
         private void TreeRefresh()
@@ -312,10 +345,10 @@ namespace TurboKAPOWNIK
             TreeRefresh();
         }
 
-        private void button3_Click(object sender, RoutedEventArgs e)
+        private void save_Click(object sender, RoutedEventArgs e)
         {       
             var json = JsonConvert.SerializeObject(current_sprint);
-            System.IO.File.WriteAllText(@"tasks.json", json);
+            System.IO.File.WriteAllText(sprint_path_file, json);
         }
 
         private void button4_Click(object sender, RoutedEventArgs e)
@@ -409,13 +442,7 @@ namespace TurboKAPOWNIK
 
         private void add_sprint_Click(object sender, RoutedEventArgs e)
         {
-            AddSprint add_sprint = new AddSprint();
-            add_sprint.ShowDialog();
-            if (add_sprint.genSprint != null)
-            {
-                current_sprint = add_sprint.genSprint;
-                refreshSprintInfo();                   
-            }               
+            
         }
         private void refreshSprintInfo()
         {
@@ -457,6 +484,13 @@ namespace TurboKAPOWNIK
             Task TempTask = taskFinder(SelectedTask.id);
             TempTask.subtasks.Add(addsub.genTask);
             TreeRefresh();
+        }
+
+        private string[] CheckForSprintFiles()
+        {
+            string dir = Directory.GetCurrentDirectory();
+            string[] files = Directory.GetFiles(dir,"*.json");
+            return files;
         }
     }
 }

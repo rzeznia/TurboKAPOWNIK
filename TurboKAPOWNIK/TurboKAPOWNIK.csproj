@@ -88,6 +88,9 @@
       <DependentUpon>AddTask.xaml</DependentUpon>
     </Compile>
     <Compile Include="Comments.cs" />
+    <Compile Include="SelectSprint.xaml.cs">
+      <DependentUpon>SelectSprint.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Task.cs" />
     <Page Include="AddComment.xaml">
       <SubType>Designer</SubType>
@@ -113,6 +116,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SelectSprint.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

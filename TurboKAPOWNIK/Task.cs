@@ -158,7 +158,7 @@ namespace TurboKAPOWNIK
             this.task_list = new List<Task>();
             this.start_date = start_date;
             this.end_date = end_date;
-            this.sprint_name = start_date.Year.ToString() + "." + start_date.Month.ToString() + "." + sprint_no;
+            this.sprint_name = start_date.Year.ToString() + "-" + start_date.Month.ToString() + "-" + sprint_no;
         }
         public Sprint(Sprint new_sprint)
         {

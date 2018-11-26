@@ -61,3 +61,5 @@ C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNI
 C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\obj\Debug\TurboKAPOWNIK.Properties.Resources.resources
 C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\obj\Debug\TurboKAPOWNIK.csproj.GenerateResource.Cache
 C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\bin\Debug\toJSON.dll
+C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\obj\Debug\SelectSprint.g.cs
+C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\obj\Debug\SelectSprint.baml
