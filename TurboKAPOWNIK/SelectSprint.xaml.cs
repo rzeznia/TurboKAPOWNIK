@@ -22,6 +22,7 @@ namespace TurboKAPOWNIK
     public partial class SelectSprint : Window
     {
         internal string selected { get; set; }
+        internal Sprint newSprint { get; set; }
         public SelectSprint(string[] sprints)
         {
             InitializeComponent();
@@ -53,6 +54,19 @@ namespace TurboKAPOWNIK
             }
             sstart.Content = "Start date: " + selectedsprint.start_date;
             send.Content = "End Date : " + selectedsprint.end_date;
+        }
+
+        private void addnew_Click(object sender, RoutedEventArgs e)
+        {
+            AddSprint addn = new AddSprint();
+            addn.ShowDialog();
+            if (addn.genSprint != null)
+            {
+                newSprint = addn.genSprint;
+                Close();
+            }
+            else
+                this.Close();
         }
     }
 }

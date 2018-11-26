@@ -13,7 +13,7 @@
         <Button x:Name="load" Content="Load selected sprint" HorizontalAlignment="Left" Margin="240,228,0,0" VerticalAlignment="Top" Width="396" Height="53" Click="load_Click" IsEnabled="False"/>
         <Label x:Name="sstart" Content="Start date:" HorizontalAlignment="Left" Margin="10,229,0,0" VerticalAlignment="Top"/>
         <Label x:Name="send" Content="End date :" HorizontalAlignment="Left" Margin="10,255,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="addnew" Content="Add new sprint" HorizontalAlignment="Left" Margin="525,5,0,0" VerticalAlignment="Top" Width="111"/>
+        <Button x:Name="addnew" Content="Add new sprint" HorizontalAlignment="Left" Margin="525,5,0,0" VerticalAlignment="Top" Width="111" Click="addnew_Click"/>
 
     </Grid>
 </Window>

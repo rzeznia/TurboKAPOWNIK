@@ -52,6 +52,17 @@ namespace TurboKAPOWNIK
                 current_sprint = add_sprint.genSprint;
                 refreshSprintInfo();
                 sprint_path_file = Directory.GetCurrentDirectory().ToString() + "\\" + current_sprint.sprint_name + ".json";
+                sbar_main_message.Text = "Sprint Added Successfully";
+            }
+        }
+        private void AddNewSprint(Sprint new_sprint)
+        {
+            if (new_sprint != null)
+            {
+                current_sprint = new_sprint;
+                refreshSprintInfo();
+                sprint_path_file = Directory.GetCurrentDirectory().ToString() + "\\" + new_sprint.sprint_name + ".json";
+                sbar_main_message.Text = "Sprint Added Successfully";
             }
         }
 
@@ -64,6 +75,8 @@ namespace TurboKAPOWNIK
                 sprint_path_file = ssprint.selected;
                 LoadSprintData(sprint_path_file);
             }
+            else if (ssprint.newSprint != null)
+                AddNewSprint(ssprint.newSprint);
             else
                 this.Close();
         }
@@ -76,6 +89,7 @@ namespace TurboKAPOWNIK
                 current_sprint = JsonConvert.DeserializeObject<Sprint>(json);
             }
             refreshSprintInfo();
+            sbar_main_message.Text = "Sprint " + current_sprint.sprint_name + " loaded";
             if (current_sprint.task_list != null)
                 TreeRefresh();
         }
@@ -227,6 +241,7 @@ namespace TurboKAPOWNIK
             {
                 current_sprint.task_list.Add(add.genTask);               
                 TreeRefresh();
+                sbar_main_message.Text = "Task " + add.genTask.id + "-" + add.genTask.task_name + " added succesfully";
             }
             
         }
@@ -246,6 +261,7 @@ namespace TurboKAPOWNIK
                 statusButtonRefresh();
                 commentsBoxRefresh();
                 subTaskButtonHandler();
+                sbar_main_message.Text = "Selected task: " + selectedString;
                 
             }
             catch (NullReferenceException) { }          
@@ -329,6 +345,7 @@ namespace TurboKAPOWNIK
             SelectedTask.start_date = DateTime.Now;
             statusButtonRefresh();
             TreeRefresh();
+            sbar_main_message.Text = sbar_main_message.Text + " -> made active";
         }
 
         private void reopen_Click(object sender, RoutedEventArgs e)
@@ -336,6 +353,7 @@ namespace TurboKAPOWNIK
             SelectedTask.status = 1;
             statusButtonRefresh();
             TreeRefresh();
+            sbar_main_message.Text = sbar_main_message.Text + " -> reopened";
         }
 
         private void resolve_Click(object sender, RoutedEventArgs e)
@@ -343,12 +361,15 @@ namespace TurboKAPOWNIK
             SelectedTask.status = 3;
             statusButtonRefresh();
             TreeRefresh();
+            sbar_main_message.Text = sbar_main_message.Text + " -> resolved";
         }
 
         private void save_Click(object sender, RoutedEventArgs e)
         {       
             var json = JsonConvert.SerializeObject(current_sprint);
             System.IO.File.WriteAllText(sprint_path_file, json);
+            sbar_last_saved.Text = "Last Saved Sprint: " + DateTime.Now.ToString();
+            sbar_main_message.Text = "Sprint " + current_sprint.sprint_name + " saved sucessfully.";
         }
 
         private void button4_Click(object sender, RoutedEventArgs e)
@@ -395,18 +416,31 @@ namespace TurboKAPOWNIK
         private void inJira_chBox_Handle()
         {
             if (SelectedTask.inJira == true)
+            {
                 inJiraChBox.IsChecked = true;
+                sbar_main_message.Text = "Task marked in Jira";
+            }                
             else
+            {
                 inJiraChBox.IsChecked = false;
+                sbar_main_message.Text = "Task not marked in Jira";
+            }                
             TreeRefresh();
         }
 
         private void HideIfJira_Checked(object sender, RoutedEventArgs e)
         {
             if (HideIfJira.IsChecked == true)
+            {
                 JiraFilterSwitch = true;
+                sbar_main_message.Text = "Jira tasks not visible";
+            }                
             else
+            {
+                sbar_main_message.Text = "Jira tasks visible";
                 JiraFilterSwitch = false;
+            }
+                
             TreeRefresh();
         }
 
@@ -415,8 +449,15 @@ namespace TurboKAPOWNIK
             if(SelectedTask != null)
             {
                 current_sprint.task_list.Remove(SelectedTask);
+                sbar_main_message.Text = "Task " + SelectedTask.id + "-" + SelectedTask.task_name + " deleted succesfully";
                 TreeRefresh();
+                selectedTaskReset();                
             }
+        }
+
+        private void selectedTaskReset()
+        {
+            throw new NotImplementedException();
         }
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -437,6 +478,7 @@ namespace TurboKAPOWNIK
             {
                 SelectedTask.comments.Add(comment.genComment);
                 commentsBoxRefresh();
+                sbar_main_message.Text = "Comment added";
             }
         }
 
@@ -483,6 +525,7 @@ namespace TurboKAPOWNIK
             addsub.ShowDialog();
             Task TempTask = taskFinder(SelectedTask.id);
             TempTask.subtasks.Add(addsub.genTask);
+            sbar_main_message.Text = "Subtask " + addsub.genTask.id + "-" + addsub.genTask.task_name + " for task " + TempTask.id + "-" + TempTask.task_name + " added successfully.";
             TreeRefresh();
         }
 

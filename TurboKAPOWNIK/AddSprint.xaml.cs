@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,12 +25,12 @@ namespace TurboKAPOWNIK
         internal Sprint genSprint { get; set; }
         internal int sp_no { get; set; }
 
-        public AddSprint()
+        public AddSprint(bool save = false)
         {
             InitializeComponent();
-            //valdiate_add_button();
-        }
+            sp_no = 1;
 
+        }
         private void valdiate_add_button()
         {
             if(sp_no == null)
