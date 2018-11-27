@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.IO;
+using System.ComponentModel;
 
 namespace TurboKAPOWNIK
 {
@@ -32,7 +33,7 @@ namespace TurboKAPOWNIK
         {
             InitializeComponent();
             string[] sprints = CheckForSprintFiles();
-            if(sprints.Length > 0)
+            if (sprints.Length > 0)
                 SelectExtSprint(sprints);
             else
                 AddNewSprint();
@@ -40,7 +41,14 @@ namespace TurboKAPOWNIK
 
             if (current_sprint.task_list != null)
                 TreeRefresh();
-            
+
+            Application.Current.MainWindow.Closing += new CancelEventHandler(MainWindow_Closing);           
+        }
+
+        void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            var json = JsonConvert.SerializeObject(current_sprint);
+            System.IO.File.WriteAllText(sprint_path_file, json);
         }
 
         private void AddNewSprint()
@@ -239,7 +247,7 @@ namespace TurboKAPOWNIK
             add.ShowDialog();
             if(add.genTask != null)
             {
-                current_sprint.task_list.Add(add.genTask);               
+                current_sprint.task_list.Add(add.genTask);                             
                 TreeRefresh();
                 sbar_main_message.Text = "Task " + add.genTask.id + "-" + add.genTask.task_name + " added succesfully";
             }
@@ -257,12 +265,18 @@ namespace TurboKAPOWNIK
                 label_status.Content = "Task Status: " + SelectedTask.getStatusName();
                 inJira_chBox_Handle();
                 categoryBox.Content = SelectedTask.category.name;
-                spBox.Content = "SP: " + SelectedTask.category.SP;
+                spBox.Content = "SP: " + SelectedTask.SP;
                 statusButtonRefresh();
                 commentsBoxRefresh();
                 subTaskButtonHandler();
                 sbar_main_message.Text = "Selected task: " + selectedString;
-                
+                if (SelectedTask.SP != SelectedTask.category.SP)
+                    multiplier.Value = SelectedTask.SP / SelectedTask.category.SP;
+                else
+                    multiplier.Value = 1;
+
+
+
             }
             catch (NullReferenceException) { }          
         }
@@ -457,7 +471,7 @@ namespace TurboKAPOWNIK
 
         private void selectedTaskReset()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -534,6 +548,20 @@ namespace TurboKAPOWNIK
             string dir = Directory.GetCurrentDirectory();
             string[] files = Directory.GetFiles(dir,"*.json");
             return files;
+        }
+
+        private void multiplier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<decimal> e)
+        {
+            try
+            {
+                Task temp = taskFinder(SelectedTask.id);
+                temp.SP = temp.category.SP * Convert.ToInt32(multiplier.Value);
+                spBox.Content = "SP : " + temp.SP;
+                if(multiplier.Value > 1)
+                    sbar_main_message.Text = sbar_main_message.Text + ". SPs multiplied by " + multiplier.Value;
+            }
+            catch (NullReferenceException) { };
+
         }
     }
 }

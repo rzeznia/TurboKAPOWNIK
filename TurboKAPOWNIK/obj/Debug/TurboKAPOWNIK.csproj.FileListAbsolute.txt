@@ -63,3 +63,5 @@ C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNI
 C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\bin\Debug\toJSON.dll
 C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\obj\Debug\SelectSprint.g.cs
 C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\obj\Debug\SelectSprint.baml
+C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\bin\Debug\TAlex.WPF.Controls.dll
+C:\Users\Marcin\Documents\Visual Studio 2015\Projects\TurboKAPOWNIK\TurboKAPOWNIK\bin\Debug\TAlex.WPF.Controls.xml

@@ -62,7 +62,7 @@ namespace TurboKAPOWNIK
             this.task_name = task_name;
             this.details = details;
             this.status = 1;
-            this.SP = 0;
+            this.SP = category.SP;
             this.asignee = "Marcin Rzeźnik";
             this.add_Date = assign_datetime();
             this.parent_task = parent;
