@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.IO;
-using System.ComponentModel;
 
 namespace TurboKAPOWNIK
 {
@@ -32,8 +31,10 @@ namespace TurboKAPOWNIK
         public MainWindow()
         {
             InitializeComponent();
+            rp_sp.Text = "0";
+            all_sp.Text = "0";
             string[] sprints = CheckForSprintFiles();
-            if (sprints.Length > 0)
+            if(sprints.Length > 0)
                 SelectExtSprint(sprints);
             else
                 AddNewSprint();
@@ -41,14 +42,7 @@ namespace TurboKAPOWNIK
 
             if (current_sprint.task_list != null)
                 TreeRefresh();
-
-            Application.Current.MainWindow.Closing += new CancelEventHandler(MainWindow_Closing);           
-        }
-
-        void MainWindow_Closing(object sender, CancelEventArgs e)
-        {
-            var json = JsonConvert.SerializeObject(current_sprint);
-            System.IO.File.WriteAllText(sprint_path_file, json);
+            
         }
 
         private void AddNewSprint()
@@ -183,6 +177,7 @@ namespace TurboKAPOWNIK
             treeNew.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
             treeActive.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
             treeDone.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
+            count_sps();
         }
 
         private void ExpandAllNodes(TreeViewItem treeItem)
@@ -247,17 +242,45 @@ namespace TurboKAPOWNIK
             add.ShowDialog();
             if(add.genTask != null)
             {
-                current_sprint.task_list.Add(add.genTask);                             
+                current_sprint.task_list.Add(add.genTask);               
                 TreeRefresh();
                 sbar_main_message.Text = "Task " + add.genTask.id + "-" + add.genTask.task_name + " added succesfully";
             }
             
         }
 
+        private void count_sps()
+        {
+            var count_reported = 0;
+            var count_all = 0;
+            foreach (var item in current_sprint.task_list)
+            {
+                count_all += (item.category.SP * item.multiplier);
+                if (item.inJira)
+                {
+                    count_reported += (item.category.SP * item.multiplier);
+                }
+                if(item.subtasks.Count != 0)
+                {
+                    foreach (var subitem in item.subtasks)
+                    {
+                        count_all += (subitem.category.SP * subitem.multiplier);
+                        if (subitem.inJira)
+                        {
+                            count_reported += (subitem.category.SP * subitem.multiplier);
+                        }
+                    }
+                }
+            }
+            rp_sp.Text = count_reported.ToString();
+            all_sp.Text = count_all.ToString();
+        }
+
         private void tree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             try
             {
+                jira_copy.IsEnabled = true;
                 string selectedString = ((TreeViewItem)e.NewValue).Header.ToString();
                 string[] starr = selectedString.Split('-'); 
                 SelectedTask = taskFinder(Convert.ToInt32(starr[0]));
@@ -265,18 +288,12 @@ namespace TurboKAPOWNIK
                 label_status.Content = "Task Status: " + SelectedTask.getStatusName();
                 inJira_chBox_Handle();
                 categoryBox.Content = SelectedTask.category.name;
-                spBox.Content = "SP: " + SelectedTask.SP;
+                spBox.Content = "SP:" + SelectedTask.category.SP + " x " + SelectedTask.multiplier+ " = " + (SelectedTask.category.SP * SelectedTask.multiplier);
                 statusButtonRefresh();
                 commentsBoxRefresh();
                 subTaskButtonHandler();
                 sbar_main_message.Text = "Selected task: " + selectedString;
-                if (SelectedTask.SP != SelectedTask.category.SP)
-                    multiplier.Value = SelectedTask.SP / SelectedTask.category.SP;
-                else
-                    multiplier.Value = 1;
-
-
-
+                
             }
             catch (NullReferenceException) { }          
         }
@@ -471,7 +488,7 @@ namespace TurboKAPOWNIK
 
         private void selectedTaskReset()
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -539,7 +556,7 @@ namespace TurboKAPOWNIK
             addsub.ShowDialog();
             Task TempTask = taskFinder(SelectedTask.id);
             TempTask.subtasks.Add(addsub.genTask);
-            sbar_main_message.Text = "Subtask " + addsub.genTask.id + "-" + addsub.genTask.task_name + " for task " + TempTask.id + "-" + TempTask.task_name + " added successfully.";
+            //sbar_main_message.Text = "Subtask " + addsub.genTask.id + "-" + addsub.genTask.task_name + " for task " + TempTask.id + "-" + TempTask.task_name + " added successfully.";
             TreeRefresh();
         }
 
@@ -550,18 +567,46 @@ namespace TurboKAPOWNIK
             return files;
         }
 
-        private void multiplier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<decimal> e)
+        private void task_edit_Click(object sender, RoutedEventArgs e)
         {
-            try
+            var elo = 0;
+            if (SelectedTask.parent_task != 0)
             {
-                Task temp = taskFinder(SelectedTask.id);
-                temp.SP = temp.category.SP * Convert.ToInt32(multiplier.Value);
-                spBox.Content = "SP : " + temp.SP;
-                if(multiplier.Value > 1)
-                    sbar_main_message.Text = sbar_main_message.Text + ". SPs multiplied by " + multiplier.Value;
+                var parent = taskFinder(SelectedTask.parent_task);
+                elo = current_sprint.task_list.IndexOf(parent);
             }
-            catch (NullReferenceException) { };
+            else
+            {
+                elo = current_sprint.task_list.IndexOf(SelectedTask);
+            }
+            
+            AddTask edit = new AddTask(0, SelectedTask);
+            edit.ShowDialog();
 
+            if (SelectedTask.parent_task != 0)
+            {
+                var parent = taskFinder(SelectedTask.parent_task);
+                var subindex = parent.subtasks.IndexOf(SelectedTask);
+                parent.subtasks[subindex] = edit.genTask;
+            }
+            else
+            {
+                current_sprint.task_list[elo] = edit.genTask;
+            }
+
+            TreeRefresh();
+
+        }
+
+        private void jira_copy_Click(object sender, RoutedEventArgs e)
+        {
+            var jira_str = "";
+            if(SelectedTask.multiplier == 1)
+                jira_str = "||Category||SP||\n| " + SelectedTask.category.name + "| " + SelectedTask.category.SP + "|";
+            else
+                jira_str = "||Category||SP||\n| " + SelectedTask.category.name + "| " + SelectedTask.category.SP + "x" + SelectedTask.multiplier + "|";
+            Clipboard.SetText(jira_str);
+            sbar_main_message.Text = "Jira string copied!";
         }
     }
 }

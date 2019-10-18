@@ -14,11 +14,18 @@ namespace TurboKAPOWNIK
         public string task_name { get; set; }
         public string asignee { get; set; }
         public Category category { get; set; }
+        public int multiplier { get; set; }
         public string details { get; set; }
         public List<Comments> comments = new List<Comments>();
         public int SP { get; set; }
         public int status { get; set; }
         public List<Task> subtasks = new List<Task>();
+        private int new_task_id;
+        private string text1;
+        private int v1;
+        private string text2;
+        private int v2;
+
         public DateTime add_Date { get; set; }
         public DateTime start_date { get; set; }
         public DateTime resolve_time { get; set; }
@@ -27,7 +34,7 @@ namespace TurboKAPOWNIK
         
 
         [JsonConstructor]
-        public Task(int id, string task_name, string asignee, Category category, string details, Comments comment, int sp, int status, Task subtask, DateTime adddate, DateTime startdate, DateTime resolvedate, int parent, bool jira)
+        public Task(int id, string task_name, string asignee, Category category, int multiplier, string details, Comments comment, int sp, int status, Task subtask, DateTime adddate, DateTime startdate, DateTime resolvedate, int parent, bool jira)
         {
             this.id = id;
             this.task_name = task_name;
@@ -36,6 +43,7 @@ namespace TurboKAPOWNIK
             this.details = details;
             this.comments.Add(new Comments(comment));
             this.SP = sp;
+            this.multiplier = multiplier;
             this.status = status;
             this.subtasks.Add(subtask);
             this.add_Date = adddate;
@@ -44,25 +52,27 @@ namespace TurboKAPOWNIK
             this.parent_task = parent;
             this.inJira = jira;
         }
-        public Task(int id, string task_name, Category category, string details)
+        public Task(int id, string task_name, Category category, int multiplier, string details)
         {
             this.id = id;
             this.task_name = task_name;
             this.details = details;
             this.status = 1;
             this.SP = category.SP;
+            this.multiplier = multiplier;
             this.asignee = "Marcin Rzeźnik";
             this.add_Date = assign_datetime();
             this.inJira = false;
             this.category = category;
         }
-        public Task(int id, string task_name, Category category, string details, int parent)
+        public Task(int id, string task_name, Category category, int multiplier, string details, int parent)
         {
             this.id = id;
             this.task_name = task_name;
             this.details = details;
             this.status = 1;
             this.SP = category.SP;
+            this.multiplier = multiplier;
             this.asignee = "Marcin Rzeźnik";
             this.add_Date = assign_datetime();
             this.parent_task = parent;
@@ -70,6 +80,24 @@ namespace TurboKAPOWNIK
             this.category = category;
         }
 
+        public Task(int new_task_id, string asignee, string text1, Category category, int v1, string text2, List<Comments> comments, int v2, int status, List<Task> subtasks, DateTime add_Date, DateTime start_date, DateTime resolve_time, int parent_task, bool inJira)
+        {
+            this.new_task_id = new_task_id;
+            this.asignee = asignee;
+            this.text1 = text1;
+            this.category = category;
+            this.v1 = v1;
+            this.text2 = text2;
+            this.comments = comments;
+            this.v2 = v2;
+            this.status = status;
+            this.subtasks = subtasks;
+            this.add_Date = add_Date;
+            this.start_date = start_date;
+            this.resolve_time = resolve_time;
+            this.parent_task = parent_task;
+            this.inJira = inJira;
+        }
 
         internal string getStatusName()
         {
@@ -92,7 +120,7 @@ namespace TurboKAPOWNIK
         
         internal void CreateSubtask(Task task, Category category)
         {
-            this.subtasks.Add(new Task(task.id, task.task_name, category, task.details, this.id));
+            this.subtasks.Add(new Task(task.id, task.task_name, category, 1, task.details, this.id));
         }
         internal void isinJira(bool condition)
         {
@@ -130,7 +158,7 @@ namespace TurboKAPOWNIK
             new Category(7, "Simple sighting reproduction", 8),
             new Category(8, "Advanced sighting reproduction", 28),
             new Category(9, "Test Execution", 0),
-            new Category(10, "Other", 0)
+            new Category(10, "Other/Aggregation Task", 0)
         };
         public static string getCategoryText(int cat_index)
         {
