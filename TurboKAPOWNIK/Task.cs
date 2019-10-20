@@ -19,7 +19,7 @@ namespace TurboKAPOWNIK
         public List<Comments> comments = new List<Comments>();
         public int SP { get; set; }
         public int status { get; set; }
-        public List<Task> subtasks = new List<Task>();
+        public List<int> subtasks = new List<int>();
         private int new_task_id;
         private string text1;
         private int v1;
@@ -31,10 +31,10 @@ namespace TurboKAPOWNIK
         public DateTime resolve_time { get; set; }
         public int parent_task { get; set; }
         public bool inJira { get; set; }
-        
+        public bool isSubtask { get; set; }
 
         [JsonConstructor]
-        public Task(int id, string task_name, string asignee, Category category, int multiplier, string details, Comments comment, int sp, int status, Task subtask, DateTime adddate, DateTime startdate, DateTime resolvedate, int parent, bool jira)
+        public Task(int id, string task_name, string asignee, Category category, int multiplier, string details, Comments comment, int sp, int status, int subtask, DateTime adddate, DateTime startdate, DateTime resolvedate, int parent, bool jira, bool isSubtask)
         {
             this.id = id;
             this.task_name = task_name;
@@ -46,6 +46,7 @@ namespace TurboKAPOWNIK
             this.multiplier = multiplier;
             this.status = status;
             this.subtasks.Add(subtask);
+            this.isSubtask = isSubtask;
             this.add_Date = adddate;
             this.start_date = startdate;
             this.resolve_time = resolvedate;
@@ -78,9 +79,10 @@ namespace TurboKAPOWNIK
             this.parent_task = parent;
             this.inJira = false;
             this.category = category;
+            this.isSubtask = true;
         }
 
-        public Task(int new_task_id, string asignee, string text1, Category category, int v1, string text2, List<Comments> comments, int v2, int status, List<Task> subtasks, DateTime add_Date, DateTime start_date, DateTime resolve_time, int parent_task, bool inJira)
+        public Task(int new_task_id, string asignee, string text1, Category category, int v1, string text2, List<Comments> comments, int v2, int status, List<int> subtasks, DateTime add_Date, DateTime start_date, DateTime resolve_time, int parent_task, bool inJira, bool isSubtask)
         {
             this.new_task_id = new_task_id;
             this.asignee = asignee;
@@ -92,6 +94,7 @@ namespace TurboKAPOWNIK
             this.v2 = v2;
             this.status = status;
             this.subtasks = subtasks;
+            this.isSubtask = isSubtask;
             this.add_Date = add_Date;
             this.start_date = start_date;
             this.resolve_time = resolve_time;
@@ -118,87 +121,13 @@ namespace TurboKAPOWNIK
             return DateTime.Now;
         } 
         
-        internal void CreateSubtask(Task task, Category category)
-        {
-            this.subtasks.Add(new Task(task.id, task.task_name, category, 1, task.details, this.id));
-        }
+        //internal void CreateSubtask(Task task, Category category)
+        //{
+        //    this.subtasks.Add(new Task(task.id, task.task_name, category, 1, task.details, this.id));
+        //}
         internal void isinJira(bool condition)
         {
             this.inJira = condition;
         }       
-    }
-    
-    public class Category
-    {
-        public int id;
-        public string name;
-        public int SP;
-
-        public Category(Category cat)
-        {
-            this.id = cat.id;
-            this.name = cat.name;
-            this.SP = cat.SP;
-        }
-        [JsonConstructor]
-        public Category(int id, string name, int SP)
-        {
-            this.id = id;
-            this.name = name;
-            this.SP = SP;
-        }
-        public static List<Category> category = new List<Category>() {
-            new Category(0, "Lab Maintenance - Simple setup preparation", 7),
-            new Category(1, "Lab Maintenance - Advanced setup preparation", 24),
-            new Category(2, "Lab Maintenance - SAS Management", 5),
-            new Category(3, "Lab Maintenance - SWARM", 12),
-            new Category(4, "Database/tools management - Tools management", 23),
-            new Category(5, "Database/tools management - Stocktaking", 18),
-            new Category(6, "Database/tools management - Database update", 11),
-            new Category(7, "Simple sighting reproduction", 8),
-            new Category(8, "Advanced sighting reproduction", 28),
-            new Category(9, "Test Execution", 0),
-            new Category(10, "Other/Aggregation Task", 0)
-        };
-        public static string getCategoryText(int cat_index)
-        {
-            return category[cat_index].name;
-        }
-    }
-    [Serializable]
-    class Sprint
-    {
-        public DateTime start_date { get; set; }
-        public DateTime end_date { get; set; }
-        public List<Task> task_list = new List<Task>();
-        public string sprint_name { get; set; }
-
-        //public Sprint(List<Task> task_list_new, DateTime start_date, DateTime end_date, int sprint_no)
-        //{
-        //    this.task_list = task_list_new;
-        //    this.start_date = start_date;
-        //    this.end_date = end_date;
-        //    this.sprint_name = start_date.Year.ToString() + "." + start_date.Month.ToString() + "." + sprint_no;
-        //}
-        [JsonConstructor]
-        public Sprint(DateTime start_date, DateTime end_date, int sprint_no)
-        {
-            this.task_list = new List<Task>();
-            this.start_date = start_date;
-            this.end_date = end_date;
-            this.sprint_name = start_date.Year.ToString() + "-" + start_date.Month.ToString() + "-" + sprint_no;
-        }
-        public Sprint(Sprint new_sprint)
-        {
-            this.start_date = new_sprint.start_date;
-            this.end_date = new_sprint.end_date;
-            this.task_list = new List<Task>();
-            this.sprint_name = new_sprint.sprint_name;
-        }
-
-        public Sprint()
-        {
-            task_list = null;
-        }
     }
 }

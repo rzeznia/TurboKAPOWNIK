@@ -23,7 +23,7 @@
             <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,6,0,0" TextWrapping="Wrap" Text="Task Name" VerticalAlignment="Top"/>
             <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" Margin="10,86,0,0" TextWrapping="Wrap" Text="Category" VerticalAlignment="Top"/>
             <TextBlock x:Name="textBlock_Copy1" HorizontalAlignment="Left" Margin="10,197,0,0" TextWrapping="Wrap" Text="Details:" VerticalAlignment="Top"/>
-            <Button x:Name="button_confirm" Content="Add task" HorizontalAlignment="Left" Margin="10,278,0,0" VerticalAlignment="Top" Width="252" Height="54" Click="button_confirm_Click"/>
+            <Button x:Name="button_confirm" Content="Add task" HorizontalAlignment="Left" Margin="10,278,0,0" VerticalAlignment="Top" Width="252" Height="54" Click="button_confirm_Click" IsEnabled="False"/>
             <Label x:Name="parent" Content="" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="252"/>
 
 

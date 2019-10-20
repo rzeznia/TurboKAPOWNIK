@@ -22,7 +22,7 @@ namespace TurboKAPOWNIK
         
         private int new_task_id { get; set; }
         internal Task genTask { get; set; }
-        internal Task parentTask { get; set; }
+        public Task parentTask { get; set; }
 
         private bool edit { get; set; }
 
@@ -36,11 +36,13 @@ namespace TurboKAPOWNIK
             new_task_id = new_id;
             if(new_id == 0)
             {
+                this.parentTask = parent_task;
                 task_name.Text = parent_task.task_name;
                 multiplier.Text = parent_task.multiplier.ToString();
                 category_combo.SelectedValue = parent_task.category.name;
                 new_task_id = parent_task.id;
                 edit = true;
+                button_confirm.IsEnabled = true;
             }
             else if (parent_task != null)
             {
@@ -68,6 +70,7 @@ namespace TurboKAPOWNIK
 
         private void category_combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            button_confirm.IsEnabled = true;
             string category_name = e.AddedItems[0].ToString();
             sp_value.Text = getCategoryObj(category_name).SP.ToString();
             sp_multi.Text = sp_value.Text;
@@ -83,15 +86,20 @@ namespace TurboKAPOWNIK
 
         private void button_confirm_Click(object sender, RoutedEventArgs e)
         {
-            if (parentTask == null)
+            if (this.parentTask == null)
                 genTask = new Task(new_task_id, task_name.Text, getCategoryObj(category_combo.SelectedItem.ToString()), Convert.ToInt32(multiplier.Text), task_details.Text);
             else if (edit == true)
-                genTask = new Task(new_task_id, parentTask.asignee, task_name.Text, getCategoryObj(category_combo.SelectedItem.ToString()), Convert.ToInt32(multiplier.Text), task_details.Text, parentTask.comments, (getCategoryObj(category_combo.SelectedItem.ToString()).SP * Convert.ToInt32(multiplier.Text)), parentTask.status, parentTask.subtasks, parentTask.add_Date, parentTask.start_date, parentTask.resolve_time, parentTask.parent_task, parentTask.inJira);
+            {
+                genTask = parentTask;
+                genTask.task_name = task_name.Text;
+                genTask.category = getCategoryObj(category_combo.SelectedItem.ToString());
+                genTask.multiplier = Convert.ToInt32(multiplier.Text);
+                genTask.details = task_details.Text;
+            }
             else
                 genTask = new Task(new_task_id, task_name.Text, getCategoryObj(category_combo.SelectedItem.ToString()), Convert.ToInt32(multiplier.Text), task_details.Text, parentTask.id);
+            this.DialogResult = true;
             this.Close();
         }
-
-        
     }
 }

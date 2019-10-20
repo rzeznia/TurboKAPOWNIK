@@ -104,80 +104,84 @@ namespace TurboKAPOWNIK
             Dictionary<int, int> DiffSubStatus = new Dictionary<int, int>();
             foreach (var task in current_sprint.task_list)
             {
-                TreeViewItem treeItem = new TreeViewItem();
-                treeItem = new TreeViewItem();
-                treeItem.Header = task.id + "-" + task.task_name;
-                DiffSubStatus.Clear();
-                int InJiraSub = 0;
-                if (task.subtasks.Count() > 0)
-                {                    
-                    foreach (var subtask in task.subtasks)
+                if (!task.isSubtask)
+                {
+                    TreeViewItem treeItem = new TreeViewItem();
+                    treeItem = new TreeViewItem();
+                    treeItem.Header = task.id + "-" + task.task_name;
+                    DiffSubStatus.Clear();
+                    int InJiraSub = 0;
+                    if (task.subtasks.Count() > 0)
                     {
-                        
-                        if(subtask.status == task.status)
+                        foreach (var subtask_id in task.subtasks)
                         {
-                            TreeViewItem subItem = new TreeViewItem() { Header = subtask.id + "-" + subtask.task_name };
-                            if (subtask.inJira == true)
+                            Task subtask = taskFinder(subtask_id);
+                            if (subtask.status == task.status)
                             {
-                                FormatItemIfJira(subItem);
-                                InJiraSub++;
-                            }                                
+                                TreeViewItem subItem = new TreeViewItem() { Header = subtask.id + "-" + subtask.task_name };
+                                if (subtask.inJira == true)
+                                {
+                                    FormatItemIfJira(subItem);
+                                    InJiraSub++;
+                                }
+                                else
+                                    FormatItemIfNotJira(subItem);
+                                if (JiraFilterSwitch == false || (JiraFilterSwitch == true && subtask.inJira == false))
+                                    treeItem.Items.Add(subItem);
+                            }
                             else
-                                FormatItemIfNotJira(subItem);
-                            if(JiraFilterSwitch == false || (JiraFilterSwitch == true && subtask.inJira == false))
-                                treeItem.Items.Add(subItem);
-                        }                            
-                        else
-                        {
-                            DiffSubStatus.Add(subtask.id, subtask.status);
-                            if (subtask.inJira == true)
-                                InJiraSub++;
-                            
+                            {
+                                DiffSubStatus.Add(subtask.id, subtask.status);
+                                if (subtask.inJira == true)
+                                    InJiraSub++;
+
+                            }
                         }
                     }
-                }
 
-                if (task.inJira == true)
-                    FormatItemIfJira(treeItem);
+                    if (task.inJira == true)
+                        FormatItemIfJira(treeItem);
 
-                if(JiraFilterSwitch == false || (task.inJira == false && JiraFilterSwitch == true || InJiraSub != task.subtasks.Count()))
-                {
-                    if (task.status == 1)
-                        treeNew.Items.Add(treeItem);
-                    else if (task.status == 2)
-                        treeActive.Items.Add(treeItem);
-                    else
-                        treeDone.Items.Add(treeItem);
-                }                
-
-                if (DiffSubStatus.Count > 0)
-                {
-                    List<int> subsNew = new List<int>();
-                    List<int> subsAtv = new List<int>();
-                    List<int> subsDne = new List<int>();
-                    foreach (var subid in DiffSubStatus)
+                    if (JiraFilterSwitch == false || (task.inJira == false && JiraFilterSwitch == true || InJiraSub != task.subtasks.Count()))
                     {
-
-                        if (subid.Value == 1)
-                            subsNew.Add(subid.Key);
-                        else if (subid.Value == 2)
-                            subsAtv.Add(subid.Key);
+                        if (task.status == 1)
+                            treeNew.Items.Add(treeItem);
+                        else if (task.status == 2)
+                            treeActive.Items.Add(treeItem);
                         else
-                            subsDne.Add(subid.Key);
+                            treeDone.Items.Add(treeItem);
                     }
-                    if (subsNew.Count() > 0)
-                        treeNew.Items.Add(BuildDiffSubTaskView(subsNew));
-                    if (subsAtv.Count() > 0)
-                        treeActive.Items.Add(BuildDiffSubTaskView(subsAtv));
-                    if (subsDne.Count() > 0)
-                        treeDone.Items.Add(BuildDiffSubTaskView(subsDne));
+
+                    if (DiffSubStatus.Count > 0)
+                    {
+                        List<int> subsNew = new List<int>();
+                        List<int> subsAtv = new List<int>();
+                        List<int> subsDne = new List<int>();
+                        foreach (var subid in DiffSubStatus)
+                        {
+
+                            if (subid.Value == 1)
+                                subsNew.Add(subid.Key);
+                            else if (subid.Value == 2)
+                                subsAtv.Add(subid.Key);
+                            else
+                                subsDne.Add(subid.Key);
+                        }
+                        if (subsNew.Count() > 0)
+                            treeNew.Items.Add(BuildDiffSubTaskView(subsNew));
+                        if (subsAtv.Count() > 0)
+                            treeActive.Items.Add(BuildDiffSubTaskView(subsAtv));
+                        if (subsDne.Count() > 0)
+                            treeDone.Items.Add(BuildDiffSubTaskView(subsDne));
+                    }
+
                 }
-                
+                treeNew.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
+                treeActive.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
+                treeDone.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
+                count_sps();
             }
-            treeNew.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
-            treeActive.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
-            treeDone.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
-            count_sps();
+                
         }
 
         private void ExpandAllNodes(TreeViewItem treeItem)
@@ -257,20 +261,7 @@ namespace TurboKAPOWNIK
             {
                 count_all += (item.category.SP * item.multiplier);
                 if (item.inJira)
-                {
                     count_reported += (item.category.SP * item.multiplier);
-                }
-                if(item.subtasks.Count != 0)
-                {
-                    foreach (var subitem in item.subtasks)
-                    {
-                        count_all += (subitem.category.SP * subitem.multiplier);
-                        if (subitem.inJira)
-                        {
-                            count_reported += (subitem.category.SP * subitem.multiplier);
-                        }
-                    }
-                }
             }
             rp_sp.Text = count_reported.ToString();
             all_sp.Text = count_all.ToString();
@@ -293,7 +284,7 @@ namespace TurboKAPOWNIK
                 commentsBoxRefresh();
                 subTaskButtonHandler();
                 sbar_main_message.Text = "Selected task: " + selectedString;
-                
+                task_edit.IsEnabled = true;
             }
             catch (NullReferenceException) { }          
         }
@@ -353,19 +344,6 @@ namespace TurboKAPOWNIK
             {
                 if (task.id == v)
                     return task;
-                else
-                {
-                    if (task.subtasks.Count() > 0)
-                    {
-                        foreach (var subtask in task.subtasks)
-                        {
-                            if (subtask.id == Convert.ToInt32(v))
-                            {
-                                return subtask;
-                            }
-                        }
-                    }
-                }
             }
             return null;
         }
@@ -422,11 +400,6 @@ namespace TurboKAPOWNIK
                 foreach (var task in current_sprint.task_list)
                 {
                     ids.Add(task.id);
-                    if (task.subtasks.Count() > 0)
-                    {
-                        foreach (var subtask in task.subtasks)
-                            ids.Add(subtask.id);
-                    }
                 }
                 return ids.Max() + 1;
             }
@@ -555,7 +528,8 @@ namespace TurboKAPOWNIK
             AddTask addsub = new AddTask(generateIdForNewTask(), SelectedTask);
             addsub.ShowDialog();
             Task TempTask = taskFinder(SelectedTask.id);
-            TempTask.subtasks.Add(addsub.genTask);
+            TempTask.subtasks.Add(addsub.genTask.id);
+            current_sprint.task_list.Add(addsub.genTask);
             //sbar_main_message.Text = "Subtask " + addsub.genTask.id + "-" + addsub.genTask.task_name + " for task " + TempTask.id + "-" + TempTask.task_name + " added successfully.";
             TreeRefresh();
         }
@@ -568,34 +542,16 @@ namespace TurboKAPOWNIK
         }
 
         private void task_edit_Click(object sender, RoutedEventArgs e)
-        {
-            var elo = 0;
-            if (SelectedTask.parent_task != 0)
-            {
-                var parent = taskFinder(SelectedTask.parent_task);
-                elo = current_sprint.task_list.IndexOf(parent);
-            }
-            else
-            {
-                elo = current_sprint.task_list.IndexOf(SelectedTask);
-            }
-            
+        {          
             AddTask edit = new AddTask(0, SelectedTask);
             edit.ShowDialog();
-
-            if (SelectedTask.parent_task != 0)
+            if(edit.DialogResult == true)
             {
-                var parent = taskFinder(SelectedTask.parent_task);
-                var subindex = parent.subtasks.IndexOf(SelectedTask);
-                parent.subtasks[subindex] = edit.genTask;
-            }
-            else
-            {
-                current_sprint.task_list[elo] = edit.genTask;
-            }
+                var idx = current_sprint.task_list.IndexOf(SelectedTask);
+                current_sprint.task_list[idx] = edit.genTask;
 
-            TreeRefresh();
-
+                TreeRefresh();
+            }
         }
 
         private void jira_copy_Click(object sender, RoutedEventArgs e)
