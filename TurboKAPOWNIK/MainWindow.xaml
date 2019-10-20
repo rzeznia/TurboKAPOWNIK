@@ -55,10 +55,20 @@
             <Label x:Name="cs_name" Content="Active sprint: ---" HorizontalAlignment="Left" Margin="10,535,0,0" VerticalAlignment="Top" Width="216"/>
             <GroupBox x:Name="groupBox2" Header="Sprint statistics" HorizontalAlignment="Left" Margin="720,317,0,0" VerticalAlignment="Top" Height="169" Width="462">
                 <Grid HorizontalAlignment="Left" Height="155" Margin="0,0,-2,-8" VerticalAlignment="Top" Width="452">
-                    <TextBlock x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Reported SP" VerticalAlignment="Top" Width="120"/>
-                    <TextBlock x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="10,38,0,0" TextWrapping="Wrap" Text="All SP" VerticalAlignment="Top" Width="120"/>
-                    <TextBlock x:Name="rp_sp" HorizontalAlignment="Left" Height="23" Margin="149,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-                    <TextBlock x:Name="all_sp" HorizontalAlignment="Left" Height="23" Margin="149,38,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+                    <TextBlock x:Name="rp_sp" HorizontalAlignment="Left" Height="23" Margin="225,31,0,0" TextAlignment="Right" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="36"/>
+                    <TextBlock x:Name="all_sp" HorizontalAlignment="Left" Height="23" Margin="225,52,0,0" TextAlignment="Right" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="37"/>
+                    <TextBlock x:Name="textnew" HorizontalAlignment="Left" Margin="87,10,0,0" TextWrapping="Wrap" Text="New" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="textactive" HorizontalAlignment="Left" Margin="129,10,0,0" TextWrapping="Wrap" Text="Active" VerticalAlignment="Top" RenderTransformOrigin="2.926,0.125"/>
+                    <TextBlock x:Name="textactive_Copy" HorizontalAlignment="Left" Margin="182,10,0,0" TextWrapping="Wrap" Text="Done" VerticalAlignment="Top" RenderTransformOrigin="2.926,0.125"/>
+                    <TextBlock x:Name="textBox1_Copy" HorizontalAlignment="Left" Height="23" Margin="0,31,0,0" TextWrapping="Wrap" Text="Reported SP" VerticalAlignment="Top" Width="70"/>
+                    <TextBlock x:Name="textBox2_Copy" HorizontalAlignment="Left" Height="23" Margin="34,54,0,0" TextWrapping="Wrap" Text="All SP" VerticalAlignment="Top" Width="36"/>
+                    <TextBlock x:Name="new_rep_sp" HorizontalAlignment="Left" TextAlignment="Right" Margin="75,31,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="36"/>
+                    <TextBlock x:Name="act_rep_sp" HorizontalAlignment="Left" TextAlignment="Right" Margin="125,31,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="36"/>
+                    <TextBlock x:Name="res_rep_sp_" HorizontalAlignment="Left" TextAlignment="Right" Margin="175,31,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="36"/>
+                    <TextBlock x:Name="new_all_sp" HorizontalAlignment="Left" TextAlignment="Right" Margin="75,52,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="36"/>
+                    <TextBlock x:Name="act_all_sp" HorizontalAlignment="Left" TextAlignment="Right" Margin="125,52,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="36"/>
+                    <TextBlock x:Name="res_all_sp" HorizontalAlignment="Left" TextAlignment="Right" Margin="175,52,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="36"/>
+                    <TextBlock x:Name="textactive_Copy1" HorizontalAlignment="Left" Margin="232,10,0,0" TextWrapping="Wrap" Text="Sprint" VerticalAlignment="Top" RenderTransformOrigin="2.926,0.125"/>
                 </Grid>
             </GroupBox>
 

@@ -265,6 +265,46 @@ namespace TurboKAPOWNIK
             }
             rp_sp.Text = count_reported.ToString();
             all_sp.Text = count_all.ToString();
+
+            count_type_sps();
+        }
+
+        private void count_type_sps()
+        {
+            var count_new_rp = 0;
+            var count_new_all = 0;
+            var count_act_rp = 0;
+            var count_act_all = 0;
+            var count_res_rp = 0;
+            var count_res_all = 0;
+
+            foreach (var item in current_sprint.task_list)
+            {
+                if (item.status == 1)
+                {
+                    count_new_all += (item.category.SP * item.multiplier);
+                    if (item.inJira)
+                        count_new_rp += (item.category.SP * item.multiplier);
+                }
+                if (item.status == 2)
+                {
+                    count_act_all += (item.category.SP * item.multiplier);
+                    if (item.inJira)
+                        count_act_rp += (item.category.SP * item.multiplier);
+                }
+                if (item.status == 3)
+                {
+                    count_res_all += (item.category.SP * item.multiplier);
+                    if (item.inJira)
+                        count_res_rp += (item.category.SP * item.multiplier);
+                }
+                new_all_sp.Text = count_new_all.ToString();
+                new_rep_sp.Text = count_new_rp.ToString();
+                act_all_sp.Text = count_act_all.ToString();
+                act_rep_sp.Text = count_act_rp.ToString();
+                res_all_sp.Text = count_res_all.ToString();
+                res_rep_sp_.Text = count_res_rp.ToString();
+            }
         }
 
         private void tree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -452,10 +492,15 @@ namespace TurboKAPOWNIK
         {
             if(SelectedTask != null)
             {
+                if (SelectedTask.isSubtask)
+                {
+                    var parent = taskFinder(SelectedTask.parent_task);
+                    parent.subtasks.Remove(SelectedTask.id);
+                }
                 current_sprint.task_list.Remove(SelectedTask);
                 sbar_main_message.Text = "Task " + SelectedTask.id + "-" + SelectedTask.task_name + " deleted succesfully";
                 TreeRefresh();
-                selectedTaskReset();                
+                //selectedTaskReset();            
             }
         }
 
