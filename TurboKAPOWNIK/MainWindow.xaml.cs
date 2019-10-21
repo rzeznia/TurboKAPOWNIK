@@ -26,6 +26,7 @@ namespace TurboKAPOWNIK
         private Task SelectedTask { get; set; }
         internal Task newTask { get; set; }
         internal bool JiraFilterSwitch { get; set; }
+        internal bool JiraFilterSwitchResolved { get; set; }
         private Sprint current_sprint = new Sprint();
         internal string sprint_path_file { get; set; }
         public MainWindow()
@@ -488,6 +489,22 @@ namespace TurboKAPOWNIK
             TreeRefresh();
         }
 
+        private void HideIfJiraResolved_Checked(object sender, RoutedEventArgs e)
+        {
+            if (hideJiraResolved.IsChecked == true)
+            {
+                JiraFilterSwitchResolved = true;
+                sbar_main_message.Text = "Jira tasks not visible";
+            }
+            else
+            {
+                sbar_main_message.Text = "Jira tasks visible";
+                JiraFilterSwitchResolved = false;
+            }
+
+            TreeRefresh();
+        }
+
         private void deleteTask_Click(object sender, RoutedEventArgs e)
         {
             if(SelectedTask != null)
@@ -572,11 +589,14 @@ namespace TurboKAPOWNIK
         {
             AddTask addsub = new AddTask(generateIdForNewTask(), SelectedTask);
             addsub.ShowDialog();
-            Task TempTask = taskFinder(SelectedTask.id);
-            TempTask.subtasks.Add(addsub.genTask.id);
-            current_sprint.task_list.Add(addsub.genTask);
-            //sbar_main_message.Text = "Subtask " + addsub.genTask.id + "-" + addsub.genTask.task_name + " for task " + TempTask.id + "-" + TempTask.task_name + " added successfully.";
-            TreeRefresh();
+            if (addsub.DialogResult == true)
+            {
+                Task TempTask = taskFinder(SelectedTask.id);
+                TempTask.subtasks.Add(addsub.genTask.id);
+                current_sprint.task_list.Add(addsub.genTask);
+                //sbar_main_message.Text = "Subtask " + addsub.genTask.id + "-" + addsub.genTask.task_name + " for task " + TempTask.id + "-" + TempTask.task_name + " added successfully.";
+                TreeRefresh();
+            }
         }
 
         private string[] CheckForSprintFiles()

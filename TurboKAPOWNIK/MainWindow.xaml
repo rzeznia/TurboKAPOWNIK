@@ -52,7 +52,7 @@
             <Label x:Name="cs_start" Content="Sprint started: ---" HorizontalAlignment="Left" Margin="320,491,0,0" VerticalAlignment="Top" Width="221"/>
             <Label x:Name="cs_end" Content="Sprint Ends: ---" HorizontalAlignment="Left" Margin="546,491,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.934,1.096" Width="221"/>
             <Label x:Name="cs_day" Content="Sprint day: ---" HorizontalAlignment="Left" Margin="320,522,0,0" VerticalAlignment="Top" Width="124"/>
-            <Label x:Name="cs_name" Content="Active sprint: ---" HorizontalAlignment="Left" Margin="10,535,0,0" VerticalAlignment="Top" Width="216"/>
+            <Label x:Name="cs_name" Content="Active sprint: ---" HorizontalAlignment="Left" Margin="974,531,0,0" VerticalAlignment="Top" Width="216"/>
             <GroupBox x:Name="groupBox2" Header="Sprint statistics" HorizontalAlignment="Left" Margin="720,317,0,0" VerticalAlignment="Top" Height="169" Width="462">
                 <Grid HorizontalAlignment="Left" Height="155" Margin="0,0,-2,-8" VerticalAlignment="Top" Width="452">
                     <TextBlock x:Name="rp_sp" HorizontalAlignment="Left" Height="23" Margin="225,31,0,0" TextAlignment="Right" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="36"/>
@@ -71,6 +71,7 @@
                     <TextBlock x:Name="textactive_Copy1" HorizontalAlignment="Left" Margin="232,10,0,0" TextWrapping="Wrap" Text="Sprint" VerticalAlignment="Top" RenderTransformOrigin="2.926,0.125"/>
                 </Grid>
             </GroupBox>
+            <CheckBox x:Name="hideJiraResolved" Content="Hide items only if resolved" HorizontalAlignment="Left" Margin="10,539,0,0" VerticalAlignment="Top" Checked="HideIfJira_Checked" Unchecked="HideIfJiraResolved_Checked"/>
 
 
 
