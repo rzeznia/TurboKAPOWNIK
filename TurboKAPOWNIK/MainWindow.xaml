@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TurboKAPOWNIK"
         mc:Ignorable="d"
-        Title="MainWindow" Height="629.255" Width="1220.259">
+        Title="TurboKAPOWNIK" Height="629.255" Width="1220.259">
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
@@ -19,7 +19,7 @@
             <Button x:Name="add_task" Content="Add Task" HorizontalAlignment="Left" Margin="10,491,0,0" VerticalAlignment="Top" Width="75" Click="add_task_Click"/>
             <GroupBox x:Name="groupBox" Header="Task Details" HorizontalAlignment="Left" Margin="720,10,0,0" VerticalAlignment="Top" Height="302" Width="462" RenderTransformOrigin="0.506,0.496">
                 <Grid HorizontalAlignment="Left" Height="279" VerticalAlignment="Top" Width="454" Margin="0,0,-4,0">
-                    <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="28" Margin="10,18,0,0" TextWrapping="Wrap" Text="Task Name - select task" VerticalAlignment="Top" Width="434"/>
+                    <TextBox x:Name="taskNameBox" HorizontalAlignment="Left" Height="28" Margin="10,18,0,0" TextWrapping="Wrap" Text="Task Name - select task" VerticalAlignment="Top" Width="434"/>
                     <Label x:Name="label_status" Content="Task Status:" HorizontalAlignment="Left" Margin="90,51,0,0" VerticalAlignment="Top" Width="101"/>
                     <Label x:Name="categoryBox" Content="Category" HorizontalAlignment="Left" Margin="10,82,0,0" VerticalAlignment="Top" Width="434" Height="26"/>
                     <Label x:Name="spBox" Content="SP:" HorizontalAlignment="Left" Margin="331,82,0,0" VerticalAlignment="Top" Width="113" Height="26"/>
@@ -71,7 +71,7 @@
                     <TextBlock x:Name="textactive_Copy1" HorizontalAlignment="Left" Margin="232,10,0,0" TextWrapping="Wrap" Text="Sprint" VerticalAlignment="Top" RenderTransformOrigin="2.926,0.125"/>
                 </Grid>
             </GroupBox>
-            <CheckBox x:Name="hideJiraResolved" Content="Hide items only if resolved" HorizontalAlignment="Left" Margin="10,539,0,0" VerticalAlignment="Top" Checked="HideIfJira_Checked" Unchecked="HideIfJiraResolved_Checked"/>
+            <CheckBox x:Name="hideJiraResolved" Content="Hide items only if resolved" HorizontalAlignment="Left" Margin="10,539,0,0" VerticalAlignment="Top" Checked="HideIfJira_Checked" Unchecked="HideIfJiraResolved_Checked" IsEnabled="False"/>
 
 
 

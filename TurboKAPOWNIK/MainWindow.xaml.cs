@@ -43,7 +43,28 @@ namespace TurboKAPOWNIK
 
             if (current_sprint.task_list != null)
                 TreeRefresh();
-            
+            ResetControls();
+        }
+
+        private void ResetControls()
+        {
+            reopen.IsEnabled = false;
+            active.IsEnabled = false;
+            resolve.IsEnabled = false;
+            cmtAdd.IsEnabled = false;
+            inJiraChBox.IsEnabled = false;
+            taskNameBox.Text = "No task selected!";
+            deleteTask.IsEnabled = false;
+        }
+
+        private void SetControls()
+        {
+            reopen.IsEnabled = true;
+            active.IsEnabled = true;
+            resolve.IsEnabled = true;
+            cmtAdd.IsEnabled = true;
+            inJiraChBox.IsEnabled = true;
+            deleteTask.IsEnabled = true;
         }
 
         private void AddNewSprint()
@@ -181,6 +202,7 @@ namespace TurboKAPOWNIK
                 treeActive.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
                 treeDone.Items.OfType<TreeViewItem>().ToList().ForEach(ExpandAllNodes);
                 count_sps();
+                SetControls();
             }
                 
         }
@@ -316,7 +338,7 @@ namespace TurboKAPOWNIK
                 string selectedString = ((TreeViewItem)e.NewValue).Header.ToString();
                 string[] starr = selectedString.Split('-'); 
                 SelectedTask = taskFinder(Convert.ToInt32(starr[0]));
-                textBox.Text = SelectedTask.task_name;
+                taskNameBox.Text = SelectedTask.task_name;
                 label_status.Content = "Task Status: " + SelectedTask.getStatusName();
                 inJira_chBox_Handle();
                 categoryBox.Content = SelectedTask.category.name;
@@ -517,7 +539,7 @@ namespace TurboKAPOWNIK
                 current_sprint.task_list.Remove(SelectedTask);
                 sbar_main_message.Text = "Task " + SelectedTask.id + "-" + SelectedTask.task_name + " deleted succesfully";
                 TreeRefresh();
-                //selectedTaskReset();            
+                ResetControls();         
             }
         }
 
