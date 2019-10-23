@@ -191,3 +191,4 @@ StyleCop.Cache
 bin
 obj
 .vs/TurboKAPOWNIK/v14/.suo
+*.suo
