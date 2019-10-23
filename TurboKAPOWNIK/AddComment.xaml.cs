@@ -19,15 +19,17 @@ namespace TurboKAPOWNIK
     /// </summary>
     public partial class AddComment : Window
     {
-        internal Comments genComment { get; set; }
-        public AddComment()
+        internal Comment genComment { get; set; }
+        internal int com_id { get; set; }
+        public AddComment(int com_id)
         {
             InitializeComponent();
+            this.com_id = com_id;
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            genComment = new Comments(textBox.Text);
+            genComment = new Comment(textBox.Text, com_id);
             Close();
         }
     }

@@ -16,7 +16,7 @@ namespace TurboKAPOWNIK
         public Category category { get; set; }
         public int multiplier { get; set; }
         public string details { get; set; }
-        public List<Comments> comments = new List<Comments>();
+        public List<int> comments = new List<int>();
         public int SP { get; set; }
         public int status { get; set; }
         public List<int> subtasks = new List<int>();
@@ -34,14 +34,14 @@ namespace TurboKAPOWNIK
         public bool isSubtask { get; set; }
 
         [JsonConstructor]
-        public Task(int id, string task_name, string asignee, Category category, int multiplier, string details, Comments comment, int sp, int status, int subtask, DateTime adddate, DateTime startdate, DateTime resolvedate, int parent, bool jira, bool isSubtask)
+        public Task(int id, string task_name, string asignee, Category category, int multiplier, string details, int comment, int sp, int status, int subtask, DateTime adddate, DateTime startdate, DateTime resolvedate, int parent, bool jira, bool isSubtask)
         {
             this.id = id;
             this.task_name = task_name;
             this.asignee = asignee;
             this.category = category;
             this.details = details;
-            this.comments.Add(new Comments(comment));
+            this.comments.Add(comment);
             this.SP = sp;
             this.multiplier = multiplier;
             this.status = status;
@@ -82,7 +82,7 @@ namespace TurboKAPOWNIK
             this.isSubtask = true;
         }
 
-        public Task(int new_task_id, string asignee, string text1, Category category, int v1, string text2, List<Comments> comments, int v2, int status, List<int> subtasks, DateTime add_Date, DateTime start_date, DateTime resolve_time, int parent_task, bool inJira, bool isSubtask)
+        public Task(int new_task_id, string asignee, string text1, Category category, int v1, string text2, List<int> comments, int v2, int status, List<int> subtasks, DateTime add_Date, DateTime start_date, DateTime resolve_time, int parent_task, bool inJira, bool isSubtask)
         {
             this.new_task_id = new_task_id;
             this.asignee = asignee;

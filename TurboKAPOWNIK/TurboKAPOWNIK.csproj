@@ -114,7 +114,7 @@
       <DependentUpon>AddTask.xaml</DependentUpon>
     </Compile>
     <Compile Include="Category.cs" />
-    <Compile Include="Comments.cs" />
+    <Compile Include="Comment.cs" />
     <Compile Include="SelectSprint.xaml.cs">
       <DependentUpon>SelectSprint.xaml</DependentUpon>
     </Compile>

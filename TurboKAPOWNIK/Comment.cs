@@ -7,19 +7,21 @@ using System.Threading.Tasks;
 
 namespace TurboKAPOWNIK
 {
-    public class Comments
+    public class Comment
     {
+        public int id { get; set; }
         public DateTime add_date { get; set; }
         public string comment { get; set; }
 
-        public Comments(string comment_)
+        public Comment(string comment_, int id_)
         {
             this.comment = comment_;
+            this.id = id_;
             this.add_date = assign_datetime();
         }
 
         [JsonConstructor]
-        public Comments(Comments comment1)
+        public Comment(Comment comment1)
         {
             if (comment1 != null)
             {

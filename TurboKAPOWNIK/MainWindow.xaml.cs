@@ -367,8 +367,9 @@ namespace TurboKAPOWNIK
             if(SelectedTask.comments.Count > 0)
             {
                 comment_count++;
-                foreach (var comment in SelectedTask.comments)
+                foreach (var comment_id in SelectedTask.comments)
                 {
+                    var comment = get_comment(comment_id);
                     comment_count++;
                     TreeViewItem comment_item = new TreeViewItem();
                     comment_item.Header = comment_count + "--" + comment.add_date;
@@ -376,6 +377,16 @@ namespace TurboKAPOWNIK
                     commentsView.Items.Add(comment_item);
                 }
             }
+        }
+
+        private Comment get_comment(int id)
+        {
+            foreach(var comment in current_sprint.comments_list)
+            {
+                if (comment.id == id)
+                    return comment;
+            }
+            return null;
         }
 
         private void statusButtonRefresh()
@@ -560,14 +571,25 @@ namespace TurboKAPOWNIK
 
         private void cmtAdd_Click(object sender, RoutedEventArgs e)
         {
-            AddComment comment = new AddComment();
+            AddComment comment = new AddComment(generate_comment_id());
             comment.ShowDialog();
             if(comment.genComment != null)
             {
-                SelectedTask.comments.Add(comment.genComment);
+                SelectedTask.comments.Add(comment.genComment.id);
+                current_sprint.comments_list.Add(comment.genComment);
                 commentsBoxRefresh();
                 sbar_main_message.Text = "Comment added";
             }
+        }
+
+        private int generate_comment_id()
+        {
+            if(current_sprint.comments_list.Count() > 0)
+            {
+                var last = current_sprint.comments_list.Last();
+                return last.id + 1;
+            }
+            return 1;
         }
 
         private void add_sprint_Click(object sender, RoutedEventArgs e)

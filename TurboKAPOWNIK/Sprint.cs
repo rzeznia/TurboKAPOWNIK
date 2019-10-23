@@ -13,6 +13,7 @@ namespace TurboKAPOWNIK
         public DateTime start_date { get; set; }
         public DateTime end_date { get; set; }
         public List<Task> task_list = new List<Task>();
+        public List<Comment> comments_list = new List<Comment>();
         public string sprint_name { get; set; }
 
         [JsonConstructor]
