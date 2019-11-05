@@ -29,13 +29,15 @@ namespace TurboKAPOWNIK
         internal bool JiraFilterSwitchResolved { get; set; }
         private Sprint current_sprint = new Sprint();
         internal string sprint_path_file { get; set; }
+        internal bool sttd { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            sttd = false;
             rp_sp.Text = "0";
             all_sp.Text = "0";
             string[] sprints = CheckForSprintFiles();
-            if(sprints.Length > 0)
+            if (sprints.Length > 0)
                 SelectExtSprint(sprints);
             else
                 AddNewSprint();
@@ -131,6 +133,7 @@ namespace TurboKAPOWNIK
                     TreeViewItem treeItem = new TreeViewItem();
                     treeItem = new TreeViewItem();
                     treeItem.Header = task.id + "-" + task.task_name;
+                    //treeItem.IsSelected = true;
                     DiffSubStatus.Clear();
                     int InJiraSub = 0;
                     if (task.subtasks.Count() > 0)
@@ -204,7 +207,7 @@ namespace TurboKAPOWNIK
                 count_sps();
                 SetControls();
             }
-                
+
         }
 
         private void ExpandAllNodes(TreeViewItem treeItem)
@@ -216,7 +219,7 @@ namespace TurboKAPOWNIK
             }
         }
 
-        private void FormatItemIfJira(TreeViewItem item, bool parent=false)
+        private void FormatItemIfJira(TreeViewItem item, bool parent = false)
         {
             item.FontStyle = FontStyles.Italic;
             item.FontWeight = FontWeights.Bold;
@@ -254,7 +257,7 @@ namespace TurboKAPOWNIK
                 }
                 else
                     FormatItemIfNotJira(subItem);
-                if(JiraFilterSwitch == false || (subtask.inJira == false && JiraFilterSwitch == true))
+                if (JiraFilterSwitch == false || (subtask.inJira == false && JiraFilterSwitch == true))
                     treeItem.Items.Add(subItem);
             }
             if (subsNew.Count() == InJiraCount && JiraFilterSwitch == true)
@@ -267,13 +270,36 @@ namespace TurboKAPOWNIK
         {
             AddTask add = new AddTask(generateIdForNewTask());
             add.ShowDialog();
-            if(add.genTask != null)
+            if (add.genTask != null)
             {
-                current_sprint.task_list.Add(add.genTask);               
-                TreeRefresh();
+                current_sprint.task_list.Add(add.genTask);
+                //TreeRefresh(); <= approach changed - no tree rebuilds!!!
+                BuildTask(add.genTask);
                 sbar_main_message.Text = "Task " + add.genTask.id + "-" + add.genTask.task_name + " added succesfully";
             }
-            
+
+        }
+
+        private void BuildTask(Task genTask)
+        {
+            var tree = getTree(genTask);
+            var tvi = new TreeViewItem();
+            tvi.Header = genTask.id + "-" + genTask.task_name;
+            tree.Items.Add(tvi);
+        }
+        private TreeView getTree(Task genTask)
+        {
+            switch (genTask.status)
+            {
+                case 1:
+                    return treeNew;
+                case 2:
+                    return treeActive;
+                case 3:
+                    return treeDone;
+                default:
+                    return null; 
+            }
         }
 
         private void count_sps()
@@ -328,28 +354,6 @@ namespace TurboKAPOWNIK
                 res_all_sp.Text = count_res_all.ToString();
                 res_rep_sp_.Text = count_res_rp.ToString();
             }
-        }
-
-        private void tree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            try
-            {
-                jira_copy.IsEnabled = true;
-                string selectedString = ((TreeViewItem)e.NewValue).Header.ToString();
-                string[] starr = selectedString.Split('-'); 
-                SelectedTask = taskFinder(Convert.ToInt32(starr[0]));
-                taskNameBox.Text = SelectedTask.task_name;
-                label_status.Content = "Task Status: " + SelectedTask.getStatusName();
-                inJira_chBox_Handle();
-                categoryBox.Content = SelectedTask.category.name;
-                spBox.Content = "SP:" + SelectedTask.category.SP + " x " + SelectedTask.multiplier+ " = " + (SelectedTask.category.SP * SelectedTask.multiplier);
-                statusButtonRefresh();
-                commentsBoxRefresh();
-                subTaskButtonHandler();
-                sbar_main_message.Text = "Selected task: " + selectedString;
-                task_edit.IsEnabled = true;
-            }
-            catch (NullReferenceException) { }          
         }
 
         private void subTaskButtonHandler()
@@ -549,9 +553,31 @@ namespace TurboKAPOWNIK
                 }
                 current_sprint.task_list.Remove(SelectedTask);
                 sbar_main_message.Text = "Task " + SelectedTask.id + "-" + SelectedTask.task_name + " deleted succesfully";
-                TreeRefresh();
-                ResetControls();         
+                //TreeRefresh(); <= approach changed - no tree rebuilds!!!
+                DestroyTask(SelectedTask);
+                ResetControls();   
             }
+        }
+
+        private void DestroyTask(Task selectedTask)
+        {
+            if (selectedTask.isSubtask) {
+                DestroyChildTask(selectedTask);
+            }
+            else
+            {
+                var tree = getTree(selectedTask);
+                tree.Items.Remove(tree.SelectedItem);
+                tree_Refresh(tree);
+            }  
+        }
+
+        private void DestroyChildTask(Task selectedTask)
+        {
+            var tree = getTree(selectedTask);
+            var treeitem = tree.SelectedItem as TreeViewItem;
+            (treeitem.Parent as TreeViewItem).Items.Remove(tree.SelectedItem);
+            
         }
 
         private void selectedTaskReset()
@@ -672,6 +698,69 @@ namespace TurboKAPOWNIK
                 jira_str = "||Category||SP||\n| " + SelectedTask.category.name + "| " + SelectedTask.category.SP + "x" + SelectedTask.multiplier + "|";
             Clipboard.SetText(jira_str);
             sbar_main_message.Text = "Jira string copied!";
+        }
+
+        private void tree_SelectedItemChanged(TreeViewItem e)
+        {
+            try
+            {
+                //jira_copy.IsEnabled = true;
+                string selectedString = e.Header.ToString();
+                string[] starr = selectedString.Split('-');
+                SelectedTask = taskFinder(Convert.ToInt32(starr[0]));
+                taskNameBox.Text = SelectedTask.task_name;
+                label_status.Content = "Task Status: " + SelectedTask.getStatusName();
+                //inJira_chBox_Handle();
+                categoryBox.Content = SelectedTask.category.name;
+                spBox.Content = "SP:" + SelectedTask.category.SP + " x " + SelectedTask.multiplier + " = " + (SelectedTask.category.SP * SelectedTask.multiplier);
+                statusButtonRefresh();
+                commentsBoxRefresh();
+                //subTaskButtonHandler();
+                sbar_main_message.Text = "Selected task: " + selectedString;
+                task_edit.IsEnabled = true;
+                SetControls();
+            }
+            catch (NullReferenceException) { }
+            
+        }
+
+        private void treeNew_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            TreeView[] anotherTrees = { treeActive, treeDone };
+            tree_ClearAnotherSelection(anotherTrees);
+            tree_SelectedItemChanged(e.NewValue as TreeViewItem);
+        }
+
+        private void treeActive_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            TreeView[] anotherTrees = { treeNew, treeDone };
+            tree_ClearAnotherSelection(anotherTrees);
+            tree_SelectedItemChanged(e.NewValue as TreeViewItem);
+        }
+
+        private void treeDone_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            TreeView[] anotherTrees = { treeActive, treeNew };
+            tree_ClearAnotherSelection(anotherTrees);
+            //tree_SelectedItemChanged(e.NewValue as TreeViewItem);
+        }
+
+        private void tree_ClearAnotherSelection(TreeView[] tvs)
+        {
+            foreach (var tv in tvs)
+            {
+                foreach (TreeViewItem item in tv.Items)
+                {
+                    if (item.IsSelected == true)
+                        item.IsSelected = false;
+                }
+            }
+        }
+        private void tree_Refresh(TreeView tv)
+        {
+            var elo = tv.ItemsSource;
+            tv.ItemsSource = null;
+            tv.ItemsSource = elo;
         }
     }
 }

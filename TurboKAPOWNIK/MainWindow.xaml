@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:TurboKAPOWNIK"
         mc:Ignorable="d"
         Title="TurboKAPOWNIK" Height="629.255" Width="1220.259">
+    
+    
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
@@ -43,9 +45,10 @@
             <Button x:Name="deleteTask" Content="Delete Task" HorizontalAlignment="Left" Margin="105,491,0,0" VerticalAlignment="Top" Width="75" Click="deleteTask_Click"/>
             <GroupBox x:Name="groupBox1" Header="&quot;Pseudo Kanban Board XD&quot;" HorizontalAlignment="Left" VerticalAlignment="Top" Height="486" Width="701">
                 <Grid HorizontalAlignment="Left" Height="459" Margin="0,0,-2,-14" VerticalAlignment="Top" Width="691">
-                    <TreeView x:Name="treeNew" HorizontalAlignment="Left" Height="449" VerticalAlignment="Top" Width="220" SelectedItemChanged="tree_SelectedItemChanged" Margin="0,10,0,0"/>
-                    <TreeView x:Name="treeActive" HorizontalAlignment="Left" Height="449" Margin="231,10,0,0" VerticalAlignment="Top" Width="220" SelectedItemChanged="tree_SelectedItemChanged"/>
-                    <TreeView x:Name="treeDone" HorizontalAlignment="Left" Height="449" Margin="461,10,0,0" VerticalAlignment="Top" Width="220" SelectedItemChanged="tree_SelectedItemChanged"/>
+
+                    <TreeView x:Name="treeNew" HorizontalAlignment="Left" Height="449" VerticalAlignment="Top" Width="220" Margin="0,10,0,0" SelectedItemChanged="treeNew_SelectedItemChanged"/>
+                    <TreeView x:Name="treeActive" HorizontalAlignment="Left" Height="449" Margin="231,10,0,0" VerticalAlignment="Top" Width="220" SelectedItemChanged="treeActive_SelectedItemChanged"/>
+                    <TreeView x:Name="treeDone" HorizontalAlignment="Left" Height="449" Margin="461,10,0,0" VerticalAlignment="Top" Width="220" SelectedItemChanged="treeDone_SelectedItemChanged"/>
                 </Grid>
             </GroupBox>
             <Button x:Name="add_sprint" Content="Add sprint" HorizontalAlignment="Left" Margin="240,491,0,0" VerticalAlignment="Top" Width="75" Click="add_sprint_Click" IsEnabled="False"/>
@@ -78,6 +81,13 @@
 
         </Grid>
     </DockPanel>
+
+
+
+    
+    
+
+
 
 
 </Window>
